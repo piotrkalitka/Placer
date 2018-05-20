@@ -44,6 +44,13 @@ public class DataManager {
         entityManager.getTransaction().commit();
     }
 
+    public void changePassword(int userId, String newPassword) {
+        entityManager.getTransaction().begin();
+        User user = entityManager.find(User.class, userId);
+        user.setPassword(newPassword);
+        entityManager.getTransaction().commit();
+    }
+
 
 
     @Nullable
