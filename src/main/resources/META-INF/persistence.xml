@@ -6,6 +6,9 @@
     <persistence-unit name="dbManager" transaction-type="RESOURCE_LOCAL">
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <class>com.piotrkalitka.placer.api.dbModels.User</class>
+        <class>com.piotrkalitka.placer.api.dbModels.Place</class>
+
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <property name="javax.persistence.jdbc.user" value="placerapp" />
