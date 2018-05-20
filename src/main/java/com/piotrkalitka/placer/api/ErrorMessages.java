@@ -1,6 +1,8 @@
 package com.piotrkalitka.placer.api;
 
 public final class ErrorMessages {
+    public static final String INVALID_TOKEN = "Invalid token or token expired";
+
     public static final String REGISTER_MISSING_DATA = "Missing data";
     public static final String REGISTER_EMAIL_INVALID = "Invalid email";
     public static final String REGISTER_PASSWORDS_NOT_MATCHES = "Passwords are not equals";
@@ -15,4 +17,6 @@ public final class ErrorMessages {
 
     public static final String REFRESH_MISSING_TOKEN = "Missing refresh token";
     public static final String REFRESH_TOKEN_INVALID = "Provided token is invalid";
+
+    public static final String ADD_PLACE_MISSING_DATA = "Missing data";
 }
