@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.piotrkalitka.placer.api.dbModels.User;
 
 import org.hibernate.Session;
@@ -51,6 +52,13 @@ public class DataManager {
         User user = entityManager.find(User.class, userId);
         user.setPassword(newPassword);
         entityManager.getTransaction().commit();
+    }
+
+    public User getUserByToken(String authToken) {
+        DecodedJWT decodedJWT = JWT
+                .decode(authToken);
+        String email = decodedJWT.getClaim("email").asString();
+        return getUser(email);
     }
 
 
