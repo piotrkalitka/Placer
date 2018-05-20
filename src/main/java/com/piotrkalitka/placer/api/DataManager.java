@@ -229,6 +229,13 @@ public class DataManager {
         return q.list();
     }
 
+    public void removeRate(int placeId, int userId) {
+        Rating rating = getRating(placeId, userId);
+        entityManager.getTransaction().begin();
+        entityManager.remove(rating);
+        entityManager.getTransaction().commit();
+    }
+
 
     ///////////////////////////////////////////// OTHERS ///////////////////////////////////////////
 

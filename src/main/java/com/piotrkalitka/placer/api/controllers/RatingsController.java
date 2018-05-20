@@ -63,4 +63,24 @@ public class RatingsController {
         return new ResponseEntity<>(responseModel, new HttpHeaders(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<Object> removeRate(@PathVariable int placeId, @RequestHeader("Authorization") String authToken) {
+        if (!DataManager.isTokenValid(authToken)) {
+            ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ErrorMessages.INVALID_TOKEN);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+
+        int userId = DataManager.getUserIdFromToken(authToken);
+
+        if (!dataManager.isRated(userId, placeId)) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ErrorMessages.REMOVE_RATE_NOT_RATED);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+
+        dataManager.removeRate(placeId, userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
 }
