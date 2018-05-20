@@ -8,6 +8,8 @@ import com.piotrkalitka.placer.api.PasswordEncoder;
 import com.piotrkalitka.placer.api.apiModels.changePassword.ChangePasswordRequestModel;
 import com.piotrkalitka.placer.api.apiModels.login.LoginRequestModel;
 import com.piotrkalitka.placer.api.apiModels.login.LoginResponseModel;
+import com.piotrkalitka.placer.api.apiModels.refresh.RefreshRequestModel;
+import com.piotrkalitka.placer.api.apiModels.refresh.RefreshResponseModel;
 import com.piotrkalitka.placer.api.apiModels.register.RegisterRequestModel;
 import com.piotrkalitka.placer.api.dbModels.User;
 
@@ -108,6 +110,26 @@ public class AuthController {
 
         dataManager.changePassword(user.getId(), PasswordEncoder.encodePasswordSHA256(password));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/refresh", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Object> refresh(@RequestBody RefreshRequestModel requestModel) {
+        String refreshToken = requestModel.getRefreshToken();
+        if (DataValidator.isEmpty(refreshToken)) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ErrorMessages.REFRESH_MISSING_TOKEN);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+        if (!DataManager.isTokenValid(refreshToken)) {
+            ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ErrorMessages.REFRESH_TOKEN_INVALID);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+        User user = dataManager.getUserByToken(refreshToken);
+        String accessToken = DataManager.generateAccessToken(user.getId(), user.getEmail());
+        refreshToken = DataManager.generateRefreshToken(user.getId(), user.getEmail());
+
+        RefreshResponseModel responseModel = new RefreshResponseModel(user.getEmail(), accessToken, refreshToken);
+        return new ResponseEntity<>(responseModel, new HttpHeaders(), HttpStatus.OK);
     }
 
 }

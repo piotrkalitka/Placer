@@ -12,4 +12,7 @@ public final class ErrorMessages {
     public static final String CHANGE_PASSWORD_MISSING_DATA = "Missing data";
     public static final String CHANGE_PASSWORD_USER_NOT_FOUND = "User with given email does not exists";
     public static final String CHANGE_PASSWORD_WRONG_PASSWORD = "Invalid password";
+
+    public static final String REFRESH_MISSING_TOKEN = "Missing refresh token";
+    public static final String REFRESH_TOKEN_INVALID = "Provided token is invalid";
 }
