@@ -36,4 +36,11 @@ public final class ErrorMessages {
     public static final String RATE_PLACE_RATE_RANGE = "Rate not in range. Should be between 1 and 5";
 
     public static final String REMOVE_RATE_NOT_RATED = "Place is not rated yet";
+
+    public static final String ADD_IMAGE_IMAGE_EMPTY = "Image is empty";
+    public static final String ADD_IMAGE_FORBIDDEN = "Forbidden";
+    public static final String ADD_IMAGE_ERROR = "An error has occurred while saving file";
+
+    public static final String REMOVE_IMAGE_FORBIDDEN = "Forbidden";
+    public static final String REMOVE_IMAGE_IMAGE_NOT_EXIST = "Image with given id does not exist";
 }
