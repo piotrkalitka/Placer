@@ -7,6 +7,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.piotrkalitka.placer.api.dbModels.Favourite;
 import com.piotrkalitka.placer.api.dbModels.Place;
+import com.piotrkalitka.placer.api.dbModels.Rating;
 import com.piotrkalitka.placer.api.dbModels.User;
 
 import org.hibernate.Session;
@@ -191,6 +192,32 @@ public class DataManager {
         entityManager.getTransaction().begin();
         entityManager.remove(favourite);
         entityManager.getTransaction().commit();
+    }
+
+
+    ///////////////////////////////////////////// RATINGS //////////////////////////////////////////
+
+    public void rate(int userId, int placeId, int rate) {
+        Rating rating = new Rating(userId, placeId, rate);
+        entityManager.getTransaction().begin();
+        entityManager.persist(rating);
+        entityManager.getTransaction().commit();
+    }
+
+    public boolean isRated(int userId, int placeId) {
+        Rating rating = getRating(placeId, userId);
+        return rating != null;
+    }
+
+    @Nullable
+    private Rating getRating(int placeId, int userId) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Rating> query = builder.createQuery(Rating.class);
+        Root<Rating> root = query.from(Rating.class);
+        query.where(builder.equal(root.get("userId"), userId), builder.equal(root.get("placeId"), placeId));
+        Query<Rating> q = session.createQuery(query);
+        List<Rating> ratings = q.list();
+        return (ratings.size() == 0) ? null : ratings.get(0);
     }
 
 
