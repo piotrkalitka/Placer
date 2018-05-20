@@ -25,4 +25,6 @@ public final class ErrorMessages {
 
     public static final String UPDATE_PLACE_FORBIDDEN = "Forbidden";
     public static final String UPDATE_PLACE_NOT_FOUND = "Place with given id not found";
+
+    public static final String GET_PLACE_NOT_FOUND = "Place not found";
 }
