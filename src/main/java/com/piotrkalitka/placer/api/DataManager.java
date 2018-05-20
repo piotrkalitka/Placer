@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.piotrkalitka.placer.api.dbModels.Place;
 import com.piotrkalitka.placer.api.dbModels.User;
 
 import org.hibernate.Session;
@@ -13,6 +14,7 @@ import org.springframework.lang.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -63,6 +65,56 @@ public class DataManager {
 
 
 
+    public  int addPlace(int userId, String name, String address, String website, String phoneNumber, String description) {
+        Place place = new Place(userId, name, address, website, phoneNumber, description);
+        entityManager.getTransaction().begin();
+        entityManager.persist(place);
+        entityManager.getTransaction().commit();
+        return place.getId();
+    }
+
+    public List<Place> getUserPlaces(int userId) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Place> query = builder.createQuery(Place.class);
+        Root<Place> root = query.from(Place.class);
+        query.where(builder.equal(root.get("userId"), userId));
+        query.select(root);
+        Query<Place> q = session.createQuery(query);
+        return q.list();
+    }
+
+    public void updatePlace(int placeId, int userId, String newName, String address, String website, String phoneNumber, String description) {
+        entityManager.getTransaction().begin();
+        Place place = entityManager.find(Place.class, placeId);
+        place.setUserId(userId);
+        place.setName(newName);
+        place.setAddress(address);
+        place.setWebsite(website);
+        place.setPhoneNumber(phoneNumber);
+        place.setDescription(description);
+        entityManager.getTransaction().commit();
+    }
+
+    @Nullable
+    public Place getPlace(int id) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Place> query = builder.createQuery(Place.class);
+        Root<Place> root = query.from(Place.class);
+        query.where(builder.equal(root.get("id"), id));
+        query.select(root);
+        Query<Place> q = session.createQuery(query);
+        return q.uniqueResult();
+    }
+
+    public void removePlace(int id) {
+        entityManager.getTransaction().begin();
+        Place place = entityManager.find(Place.class, id);
+        entityManager.remove(place);
+        entityManager.getTransaction().commit();
+    }
+
+
+
     @Nullable
     public static String generateAccessToken(int userId, String email) {
         try {
@@ -101,6 +153,11 @@ public class DataManager {
             return false;
         }
         return true;
+    }
+
+    public static int getUserIdFromToken(String token) {
+        DecodedJWT decodedJWT = JWT.decode(token);
+        return decodedJWT.getClaim("id").asInt();
     }
 
 }
