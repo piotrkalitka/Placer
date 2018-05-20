@@ -27,4 +27,8 @@ public final class ErrorMessages {
     public static final String UPDATE_PLACE_NOT_FOUND = "Place with given id not found";
 
     public static final String GET_PLACE_NOT_FOUND = "Place not found";
+
+    public static final String ADD_FAVOURITE_ALREADY_ADDED = "Place is already added to favourites";
+
+    public static final String REMOVE_FAVOURITE_PLACE_NOT_FAVOURITE = "Place is not favourite";
 }

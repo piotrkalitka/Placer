@@ -8,6 +8,7 @@
 
         <class>com.piotrkalitka.placer.api.dbModels.User</class>
         <class>com.piotrkalitka.placer.api.dbModels.Place</class>
+        <class>com.piotrkalitka.placer.api.dbModels.Favourite</class>
 
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
