@@ -29,16 +29,7 @@ public class DataManager {
     private EntityManager entityManager = Persistence.createEntityManagerFactory("dbManager").createEntityManager();
     private Session session = (Session) entityManager.getDelegate();
 
-    @Nullable
-    public User getUser(String email) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<User> query = builder.createQuery(User.class);
-        Root<User> root = query.from(User.class);
-        query.where(builder.equal(root.get("email"), email));
-        query.select(root);
-        Query<User> q = session.createQuery(query);
-        return q.uniqueResult();
-    }
+    ///////////////////////////////////////////// AUTH /////////////////////////////////////////////
 
     public boolean isEmailRegistered(String email) {
         return getUser(email) != null;
@@ -58,6 +49,19 @@ public class DataManager {
         entityManager.getTransaction().commit();
     }
 
+
+    ///////////////////////////////////////////// USERS ////////////////////////////////////////////
+    @Nullable
+    public User getUser(String email) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<User> query = builder.createQuery(User.class);
+        Root<User> root = query.from(User.class);
+        query.where(builder.equal(root.get("email"), email));
+        query.select(root);
+        Query<User> q = session.createQuery(query);
+        return q.uniqueResult();
+    }
+
     public User getUserByToken(String authToken) {
         DecodedJWT decodedJWT = JWT
                 .decode(authToken);
@@ -66,6 +70,7 @@ public class DataManager {
     }
 
 
+    ///////////////////////////////////////////// PLACES ///////////////////////////////////////////
 
     public  int addPlace(int userId, String name, String address, String website, String phoneNumber, String description) {
         Place place = new Place(userId, name, address, website, phoneNumber, description);
@@ -73,26 +78,6 @@ public class DataManager {
         entityManager.persist(place);
         entityManager.getTransaction().commit();
         return place.getId();
-    }
-
-    public List<Place> getUserPlaces(int userId) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Place> query = builder.createQuery(Place.class);
-        Root<Place> root = query.from(Place.class);
-        query.where(builder.equal(root.get("userId"), userId));
-        query.select(root);
-        Query<Place> q = session.createQuery(query);
-        return q.list();
-    }
-
-    public List<Place> getPlaces(int limit) {
-        CriteriaBuilder builder = session.getCriteriaBuilder();
-        CriteriaQuery<Place> query = builder.createQuery(Place.class);
-        Root<Place> root = query.from(Place.class);
-        query.select(root);
-        Query<Place> q = session.createQuery(query);
-        q.setMaxResults(limit);
-        return q.list();
     }
 
     public void updatePlace(int placeId, int userId, String newName, String address, String website, String phoneNumber, String description) {
@@ -106,7 +91,6 @@ public class DataManager {
         place.setDescription(description);
         entityManager.getTransaction().commit();
     }
-
     @Nullable
     public Place getPlace(int id) {
         CriteriaBuilder builder = session.getCriteriaBuilder();
@@ -118,6 +102,16 @@ public class DataManager {
         return q.uniqueResult();
     }
 
+    public List<Place> getPlaces(int limit) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Place> query = builder.createQuery(Place.class);
+        Root<Place> root = query.from(Place.class);
+        query.select(root);
+        Query<Place> q = session.createQuery(query);
+        q.setMaxResults(limit);
+        return q.list();
+    }
+
     public void removePlace(int id) {
         entityManager.getTransaction().begin();
         Place place = entityManager.find(Place.class, id);
@@ -125,7 +119,18 @@ public class DataManager {
         entityManager.getTransaction().commit();
     }
 
+    public List<Place> getUserPlaces(int userId) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Place> query = builder.createQuery(Place.class);
+        Root<Place> root = query.from(Place.class);
+        query.where(builder.equal(root.get("userId"), userId));
+        query.select(root);
+        Query<Place> q = session.createQuery(query);
+        return q.list();
+    }
 
+
+    ///////////////////////////////////////////// FAVOURITES ///////////////////////////////////////
 
     public void addFavourite(int userId, int placeId) {
         Favourite favourite = new Favourite(userId, placeId);
@@ -189,6 +194,7 @@ public class DataManager {
     }
 
 
+    ///////////////////////////////////////////// OTHERS ///////////////////////////////////////////
 
     @Nullable
     public static String generateAccessToken(int userId, String email) {
