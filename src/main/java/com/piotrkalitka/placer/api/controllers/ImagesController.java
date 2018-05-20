@@ -4,6 +4,9 @@ import com.piotrkalitka.placer.api.ApiError;
 import com.piotrkalitka.placer.api.DataManager;
 import com.piotrkalitka.placer.api.ErrorMessages;
 import com.piotrkalitka.placer.api.apiModels.addImage.AddImageResponseBody;
+import com.piotrkalitka.placer.api.apiModels.getImage.GetImageResponseBody;
+import com.piotrkalitka.placer.api.apiModels.getImages.GetImagesResponseBody;
+import com.piotrkalitka.placer.api.dbModels.Image;
 import com.piotrkalitka.placer.api.dbModels.Place;
 import com.piotrkalitka.placer.api.dbModels.User;
 
@@ -20,12 +23,29 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Component
 @RestController
 @RequestMapping(value = "/v1/user/places/{placeId}/images")
 public class ImagesController {
 
     private DataManager dataManager = new DataManager();
+
+    @RequestMapping(value = "/{imageId}", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Object> getImageForPlace(@PathVariable("placeId") int placeId, @PathVariable("imageId") int imageId){
+        GetImageResponseBody model = new GetImageResponseBody(dataManager.getImage(placeId, imageId));
+        return new ResponseEntity<>(model, new HttpHeaders(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Object> getImagesForPlace(@PathVariable("placeId") int placeId) {
+        List<Image> images = dataManager.getImages(placeId);
+        GetImagesResponseBody model = new GetImagesResponseBody(images);
+        return new ResponseEntity<>(model, new HttpHeaders(), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
     @ResponseBody

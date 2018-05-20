@@ -173,6 +173,27 @@ public class DataManager {
         return image.getId();
     }
 
+    public List<Image> getImages(int placeId) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Image> query = builder.createQuery(Image.class);
+        Root<Image> root = query.from(Image.class);
+        query.where(builder.equal(root.get("placeId"), placeId));
+        query.select(root);
+        Query<Image> q = session.createQuery(query);
+        return q.list();
+    }
+
+    @Nullable
+    public Image getImage(int placeId, int imageId) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Image> query = builder.createQuery(Image.class);
+        Root<Image> root = query.from(Image.class);
+        query.where(builder.equal(root.get("placeId"), placeId), builder.equal(root.get("id"), imageId));
+        query.select(root);
+        Query<Image> q = session.createQuery(query);
+        return (q.list().size() != 0) ? q.list().get(0) : null;
+    }
+
 
     ///////////////////////////////////////////// FAVOURITES ///////////////////////////////////////
 
