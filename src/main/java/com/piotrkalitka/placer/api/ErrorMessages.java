@@ -31,4 +31,9 @@ public final class ErrorMessages {
     public static final String ADD_FAVOURITE_ALREADY_ADDED = "Place is already added to favourites";
 
     public static final String REMOVE_FAVOURITE_PLACE_NOT_FAVOURITE = "Place is not favourite";
+
+    public static final String RATE_PLACE_ALREADY_RATED = "Place already rated";
+    public static final String RATE_PLACE_RATE_RANGE = "Rate not in range. Should be between 1 and 5";
+
+    public static final String REMOVE_RATE_NOT_RATED = "Place is not rated yet";
 }
