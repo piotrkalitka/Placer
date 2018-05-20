@@ -30,6 +30,9 @@ public class Place {
     @Column(nullable = false)
     private String phoneNumber;
     private String description;
+    @OneToMany
+    @JoinColumn(name = "placeId")
+    private List<Image> images;
 
     public Place(int userId, String name, String address, String website, String phoneNumber, @Nullable String description) {
         this.userId = userId;
@@ -82,6 +85,10 @@ public class Place {
         return description;
     }
 
+    public List<Image> getImages() {
+        return images;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -108,5 +115,9 @@ public class Place {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setImages(List<Image> images) {
+        this.images = images;
     }
 }
