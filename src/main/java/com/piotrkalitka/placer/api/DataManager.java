@@ -83,6 +83,36 @@ public class DataManager {
         return q.list();
     }
 
+    public void updatePlace(int placeId, int userId, String newName, String address, String website, String phoneNumber, String description) {
+        entityManager.getTransaction().begin();
+        Place place = entityManager.find(Place.class, placeId);
+        place.setUserId(userId);
+        place.setName(newName);
+        place.setAddress(address);
+        place.setWebsite(website);
+        place.setPhoneNumber(phoneNumber);
+        place.setDescription(description);
+        entityManager.getTransaction().commit();
+    }
+
+    @Nullable
+    public Place getPlace(int id) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Place> query = builder.createQuery(Place.class);
+        Root<Place> root = query.from(Place.class);
+        query.where(builder.equal(root.get("id"), id));
+        query.select(root);
+        Query<Place> q = session.createQuery(query);
+        return q.uniqueResult();
+    }
+
+    public void removePlace(int id) {
+        entityManager.getTransaction().begin();
+        Place place = entityManager.find(Place.class, id);
+        entityManager.remove(place);
+        entityManager.getTransaction().commit();
+    }
+
 
 
     @Nullable

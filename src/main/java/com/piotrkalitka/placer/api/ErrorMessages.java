@@ -19,4 +19,10 @@ public final class ErrorMessages {
     public static final String REFRESH_TOKEN_INVALID = "Provided token is invalid";
 
     public static final String ADD_PLACE_MISSING_DATA = "Missing data";
+
+    public static final String REMOVE_PLACE_FORBIDDEN = "Forbidden";
+    public static final String REMOVE_PLACE_NOT_FOUND = "Place with given id not found";
+
+    public static final String UPDATE_PLACE_FORBIDDEN = "Forbidden";
+    public static final String UPDATE_PLACE_NOT_FOUND = "Place with given id not found";
 }
