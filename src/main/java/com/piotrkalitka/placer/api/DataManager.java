@@ -1,10 +1,15 @@
 package com.piotrkalitka.placer.api;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.piotrkalitka.placer.api.dbModels.User;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import org.springframework.lang.Nullable;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Persistence;
@@ -37,6 +42,36 @@ public class DataManager {
         entityManager.getTransaction().begin();
         entityManager.persist(user);
         entityManager.getTransaction().commit();
+    }
+
+
+
+    @Nullable
+    public static String generateAccessToken(int userId, String email) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(Constants.JWT_SECRET);
+            return JWT.create()
+                    .withExpiresAt(new Date(new Date().getTime() + Constants.ACCESS_TOKEN_DURATION_MILLIS))
+                    .withClaim("id", userId)
+                    .withClaim("email", email)
+                    .sign(algorithm);
+        } catch (UnsupportedEncodingException ignore) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public static String generateRefreshToken(int userId, String email) {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(Constants.JWT_SECRET);
+            return JWT.create()
+                    .withExpiresAt(new Date(new Date().getTime() + Constants.REFRESH_TOKEN_DURATION_MILLIS))
+                    .withClaim("id", userId)
+                    .withClaim("email", email)
+                    .sign(algorithm);
+        } catch (UnsupportedEncodingException ignore) {
+            return null;
+        }
     }
 
 }

@@ -5,7 +5,10 @@ import com.piotrkalitka.placer.api.DataManager;
 import com.piotrkalitka.placer.api.DataValidator;
 import com.piotrkalitka.placer.api.ErrorMessages;
 import com.piotrkalitka.placer.api.PasswordEncoder;
+import com.piotrkalitka.placer.api.apiModels.login.LoginRequestModel;
+import com.piotrkalitka.placer.api.apiModels.login.LoginResponseModel;
 import com.piotrkalitka.placer.api.apiModels.register.RegisterRequestModel;
+import com.piotrkalitka.placer.api.dbModels.User;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,6 +55,29 @@ public class AuthController {
 
         dataManager.addUser(email, name, surname, PasswordEncoder.encodePasswordSHA256(password));
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseEntity<Object> login(@RequestBody LoginRequestModel requestModel) {
+        String email = requestModel.getEmail();
+        String password = requestModel.getPassword();
+
+        if (!dataManager.isEmailRegistered(email)) {
+            ApiError error = new ApiError(HttpStatus.NOT_FOUND, ErrorMessages.LOGIN_EMAIL_NOT_FOUND);
+            return new ResponseEntity<>(error, new HttpHeaders(), error.getStatus());
+        }
+
+        User user = dataManager.getUser(email);
+
+        if (!PasswordEncoder.encodePasswordSHA256(password).equals(user.getPassword())) {
+            ApiError error = new ApiError(HttpStatus.FORBIDDEN, ErrorMessages.LOGIN_WRONG_PASSWORD);
+            return new ResponseEntity<>(error, new HttpHeaders(), error.getStatus());
+        }
+
+        String accessToken = DataManager.generateAccessToken(user.getId(), user.getEmail());
+        String refreshToken = DataManager.generateRefreshToken(user.getId(), user.getEmail());
+        return new ResponseEntity<>(new LoginResponseModel(user.getEmail(), accessToken, refreshToken), new HttpHeaders(), HttpStatus.OK);
     }
 
 }
