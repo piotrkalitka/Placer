@@ -194,6 +194,21 @@ public class DataManager {
         return (q.list().size() != 0) ? q.list().get(0) : null;
     }
 
+    private Image getImage(int id) {
+        return entityManager.find(Image.class, id);
+    }
+
+    public boolean doesImageExist(int id) {
+        return getImage(id) != null;
+    }
+
+    public void removeImage(int id) {
+        Image image = getImage(id);
+        entityManager.getTransaction().begin();
+        entityManager.remove(image);
+        entityManager.getTransaction().commit();
+    }
+
 
     ///////////////////////////////////////////// FAVOURITES ///////////////////////////////////////
 

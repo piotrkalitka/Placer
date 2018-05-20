@@ -80,4 +80,28 @@ public class ImagesController {
         return new ResponseEntity<>(model, new HttpHeaders(), HttpStatus.CREATED);
     }
 
+    @RequestMapping(value = "/{imageId}", method = RequestMethod.DELETE)
+    @ResponseBody
+    public ResponseEntity<Object> removeImage(@RequestHeader("Authorization") String authToken, @PathVariable("placeId") int placeId, @PathVariable("imageId") int imageId) {
+        if (!DataManager.isTokenValid(authToken)) {
+            ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ErrorMessages.INVALID_TOKEN);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+
+        User user = dataManager.getUserByToken(authToken);
+        Place place = dataManager.getPlace(placeId);
+
+        if (place.getUserId() != user.getId()) {
+            ApiError apiError = new ApiError(HttpStatus.FORBIDDEN, ErrorMessages.REMOVE_IMAGE_FORBIDDEN);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+        if (!dataManager.doesImageExist(imageId)) {
+            ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ErrorMessages.REMOVE_IMAGE_IMAGE_NOT_EXIST);
+            return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+        }
+
+        dataManager.removeImage(imageId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }

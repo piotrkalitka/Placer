@@ -40,4 +40,7 @@ public final class ErrorMessages {
     public static final String ADD_IMAGE_IMAGE_EMPTY = "Image is empty";
     public static final String ADD_IMAGE_FORBIDDEN = "Forbidden";
     public static final String ADD_IMAGE_ERROR = "An error has occurred while saving file";
+
+    public static final String REMOVE_IMAGE_FORBIDDEN = "Forbidden";
+    public static final String REMOVE_IMAGE_IMAGE_NOT_EXIST = "Image with given id does not exist";
 }
