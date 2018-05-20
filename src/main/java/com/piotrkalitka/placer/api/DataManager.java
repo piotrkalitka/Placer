@@ -1,7 +1,9 @@
 package com.piotrkalitka.placer.api;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.piotrkalitka.placer.api.dbModels.User;
 
 import org.hibernate.Session;
@@ -79,6 +81,18 @@ public class DataManager {
         } catch (UnsupportedEncodingException ignore) {
             return null;
         }
+    }
+
+    public static boolean isTokenValid(String token) {
+        if (token == null) return false;
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(Constants.JWT_SECRET);
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            verifier.verify(token);
+        } catch (JWTVerificationException | UnsupportedEncodingException exception) {
+            return false;
+        }
+        return true;
     }
 
 }
