@@ -13,8 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Component
 @RestController
@@ -33,5 +36,13 @@ public class PlacesController {
         }
         return new ResponseEntity<>(new GetPlaceResponseModel(place), new HttpHeaders(), HttpStatus.OK);
     }
-    
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Object> getPlaces(@RequestParam(required = false, name = "limit") Integer limit) {
+        if (limit == null) limit = 100;
+        List<Place> places = dataManager.getPlaces(limit);
+        return new ResponseEntity<>(places, new HttpHeaders(), HttpStatus.OK);
+    }
+
 }
