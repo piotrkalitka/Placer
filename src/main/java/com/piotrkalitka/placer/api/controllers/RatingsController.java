@@ -4,6 +4,8 @@ import com.piotrkalitka.placer.api.ApiError;
 import com.piotrkalitka.placer.api.DataManager;
 import com.piotrkalitka.placer.api.ErrorMessages;
 import com.piotrkalitka.placer.api.apiModels.ratePlace.RatePlaceRequestModel;
+import com.piotrkalitka.placer.api.apiModels.ratings.GetRatingsResponseModel;
+import com.piotrkalitka.placer.api.dbModels.Rating;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @Component
 @RestController
@@ -48,6 +52,15 @@ public class RatingsController {
 
         dataManager.rate(userId, placeId, rate);
         return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<Object> getRatings(@PathVariable("placeId") int placeId) {
+        List<Rating> ratings = dataManager.getRatings(placeId);
+
+        GetRatingsResponseModel responseModel = new GetRatingsResponseModel(ratings);
+        return new ResponseEntity<>(responseModel, new HttpHeaders(), HttpStatus.OK);
     }
 
 }

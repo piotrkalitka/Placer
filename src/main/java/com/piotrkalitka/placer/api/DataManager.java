@@ -220,6 +220,15 @@ public class DataManager {
         return (ratings.size() == 0) ? null : ratings.get(0);
     }
 
+    public List<Rating> getRatings(int placeId) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Rating> query = builder.createQuery(Rating.class);
+        Root<Rating> root = query.from(Rating.class);
+        query.where(builder.equal(root.get("placeId"), placeId));
+        Query<Rating> q = session.createQuery(query);
+        return q.list();
+    }
+
 
     ///////////////////////////////////////////// OTHERS ///////////////////////////////////////////
 
