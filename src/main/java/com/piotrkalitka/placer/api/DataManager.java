@@ -83,6 +83,16 @@ public class DataManager {
         return q.list();
     }
 
+    public List<Place> getPlaces(int limit) {
+        CriteriaBuilder builder = session.getCriteriaBuilder();
+        CriteriaQuery<Place> query = builder.createQuery(Place.class);
+        Root<Place> root = query.from(Place.class);
+        query.select(root);
+        Query<Place> q = session.createQuery(query);
+        q.setMaxResults(limit);
+        return q.list();
+    }
+
     public void updatePlace(int placeId, int userId, String newName, String address, String website, String phoneNumber, String description) {
         entityManager.getTransaction().begin();
         Place place = entityManager.find(Place.class, placeId);
